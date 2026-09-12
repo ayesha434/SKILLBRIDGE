@@ -1,0 +1,92 @@
+-- MeoWoof Database Full SQL
+
+CREATE DATABASE meowoof;
+USE meowoof;
+
+CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(50) UNIQUE,
+    phone VARCHAR(20),
+    password VARCHAR(100),
+    role VARCHAR(20),
+    address VARCHAR(100),
+    join_date DATE
+);
+
+CREATE TABLE Areas (
+    area_id INT AUTO_INCREMENT PRIMARY KEY,
+    area_name VARCHAR(50),
+    location_description VARCHAR(100),
+    feeding_spot VARCHAR(100),
+    total_animals INT DEFAULT 0,
+    volunteer_needed VARCHAR(10)
+);
+
+CREATE TABLE Animals (
+    animal_id INT AUTO_INCREMENT PRIMARY KEY,
+    type VARCHAR(10),
+    area_id INT,
+    health_status VARCHAR(20),
+    is_vaccinated VARCHAR(10),
+    is_sterilized VARCHAR(10),
+    age INT,
+    gender VARCHAR(10),
+    feeding_time TIME,
+    last_fed_date DATE,
+    medical_note VARCHAR(100),
+    rescue_status VARCHAR(20),
+    FOREIGN KEY (area_id) REFERENCES Areas(area_id)
+);
+
+CREATE TABLE Vets (
+    vet_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    phone VARCHAR(20),
+    assigned_area INT,
+    schedule VARCHAR(50),
+    availability_status VARCHAR(20),
+    FOREIGN KEY (assigned_area) REFERENCES Areas(area_id)
+);
+
+CREATE TABLE Volunteers (
+    volunteer_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    assigned_area INT,
+    schedule VARCHAR(50),
+    availability_status VARCHAR(20),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (assigned_area) REFERENCES Areas(area_id)
+);
+
+CREATE TABLE Food (
+    food_id INT AUTO_INCREMENT PRIMARY KEY,
+    area_id INT,
+    food_type VARCHAR(20),
+    quantity INT,
+    distribution_time TIME,
+    distributed_by INT,
+    FOREIGN KEY (area_id) REFERENCES Areas(area_id),
+    FOREIGN KEY (distributed_by) REFERENCES Users(user_id)
+);
+
+CREATE TABLE Medicine (
+    medicine_id INT AUTO_INCREMENT PRIMARY KEY,
+    animal_id INT,
+    medicine_name VARCHAR(50),
+    quantity INT,
+    usage_description VARCHAR(100),
+    given_date DATE,
+    given_by INT,
+    FOREIGN KEY (animal_id) REFERENCES Animals(animal_id),
+    FOREIGN KEY (given_by) REFERENCES Vets(vet_id)
+);
+
+CREATE TABLE Reviews (
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    rating INT,
+    comment VARCHAR(200),
+    date DATE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
